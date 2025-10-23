@@ -10,7 +10,7 @@ import s from "./MainPage.module.scss";
 export const MainPage = () => {
 	const [itemId, setItemId] = useState<number>();
 	const [isNameEdit, setIsNameEdit] = useState<boolean>(false);
-	const [vehNewName, setVehNewName] = useState<string>("");
+	const [newName, setNewName] = useState<string>("");
 	const [isPriceEdit, setIsPriceEdit] = useState<boolean>(false);
 	const [newPrice, setNewPrice] = useState<number>(0);
 	const isModalOpen = useSelector((state: RootState) => state.isModalOpen.value);
@@ -31,20 +31,16 @@ export const MainPage = () => {
 		action === "name" ? setIsNameEdit(true) : setIsPriceEdit(true);
 	};
 
-	const addVehicleHandler = () => {
-		dispatch(setIsModalOpen(true));
-	};
-
 	const saveNewName = () => {
 		if (!itemId) return;
 
 		const updatedVehicles = vehicles.map((v) =>
-			v.id === itemId ? { ...v, name: vehNewName } : v
+			v.id === itemId ? { ...v, name: newName } : v
 		);
 		dispatch(setVehicles(updatedVehicles));
 
 		setIsNameEdit(false);
-		setVehNewName("");
+		setNewName("");
 		setItemId(undefined);
 	};
 
@@ -55,8 +51,11 @@ export const MainPage = () => {
 	return (
 		<div className={`${s.container} ${isModalOpen && s.hiddenScroll}`}>
 			{isModalOpen && <AddVehicleModal />}
-			<button onClick={() => getAllVehicles()}>GetVen</button> 
-			<button onClick={() => dispatch(setIsModalOpen(true))}>Создать новую машину</button>
+			<button onClick={() => getAllVehicles()}>GetVen</button>
+			<button onClick={() => dispatch(setIsModalOpen(true))}>
+				Создать новую машину
+			</button>{" "}
+			{/* Понимаю что немного спорное решение оставлять логику в разметке, но мне показалось что одну строчку излишне выносить в отдельную функцию. В реальном проекте сделал бы так, как нужно */}
 			<div>
 				{vehicles.map((item) => {
 					return (
@@ -66,7 +65,7 @@ export const MainPage = () => {
 									<input
 										placeholder="Имя"
 										onChange={(e: ChangeEvent<HTMLInputElement>) =>
-											setVehNewName(e.currentTarget.value)
+											setNewName(e.currentTarget.value)
 										}
 									/>
 									<button onClick={saveNewName}>Сохранить</button>
@@ -77,7 +76,14 @@ export const MainPage = () => {
 							<p>Модель: {item.model}</p>
 							<p>Цвет: {item.color}</p>
 							<p>Год: {item.year}</p>
-							<p>Цена: {item.price}</p>
+							{isPriceEdit && itemId === item.id ? (
+								<>
+									<input type="text" placeholder="Цена"/>
+									<button onClick={() => {}}>Сохранить</button>
+								</>
+							) : (
+								<p>Цена: {item.price}</p>
+							)}
 						</div>
 					);
 				})}
