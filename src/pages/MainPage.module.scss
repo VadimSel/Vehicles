@@ -1,0 +1,12 @@
+.container {
+  height: 100vh;
+}
+
+.container.hiddenScroll {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.vehicleItem {
+	border: 1px solid red;
+}

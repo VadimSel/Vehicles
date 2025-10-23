@@ -1,7 +1,7 @@
 import axios from "axios";
-import { VehiclesData } from "../types/vehiclesTypes";
+import { VehicleData } from "../types/vehiclesTypes";
 
-export const getVehicles = async (): Promise<VehiclesData[]> => {
+export const getVehicles = async (): Promise<VehicleData[]> => {
 	try {
 		const res = await axios.get("https://ofc-test-01.tspb.su/test-task/vehicles");
 		return res.data;

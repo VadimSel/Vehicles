@@ -1,4 +1,4 @@
-export type VehiclesData = {
+export type VehicleData = {
 	color: string;
 	id: number;
 	latitude: number;
