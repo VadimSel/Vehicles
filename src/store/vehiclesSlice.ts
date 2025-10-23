@@ -11,7 +11,6 @@ export const vehicleData = createSlice({
 			return [...action.payload];
 		},
 		addVehicle: (state, action: PayloadAction<VehicleData>) => {
-			// state.unshift(action.payload);
 			return [action.payload, ...state];
 		},
 	},
