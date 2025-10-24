@@ -58,9 +58,9 @@ export const MainPage = () => {
 		dispatch(setVehicles(filteredVehicles));
 	};
 
-	const sortByYear = () => {
+	const sortHandler = (action: "year" | "price") => {
 		const sorted = [...vehicles].sort((a, b) =>
-			sort === "asc" ? a.year - b.year : b.year - a.year
+			sort === "asc" ? a[action] - b[action] : b[action] - a[action]
 		);
 		dispatch(setVehicles(sorted));
 		setSort(sort === "asc" ? "desc" : "asc");
@@ -84,8 +84,8 @@ export const MainPage = () => {
 						<th>Имя</th>
 						<th>Модель</th>
 						<th>Цвет</th>
-						<th onClick={() => sortByYear()}>Год</th>
-						<th>Цена</th>
+						<th onClick={() => sortHandler("year")}>Год</th>
+						<th onClick={() => sortHandler("price")}>Цена</th>
 						<th>Действия</th>
 					</tr>
 				</thead>
