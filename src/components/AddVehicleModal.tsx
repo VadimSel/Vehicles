@@ -12,10 +12,10 @@ export const AddVehicleModal = () => {
 		e.preventDefault();
 		const fd = new FormData(e.currentTarget);
 		const newData: VehicleData = {
-			name: fd.get("name")?.toString() || "",
-			model: fd.get("model")?.toString() || "",
+			name: fd.get("name")?.toString() || "Отсутствует",
+			model: fd.get("model")?.toString() || "Отсутствует",
 			year: Number(fd.get("year")) || 0,
-			color: fd.get("color")?.toString() || "",
+			color: fd.get("color")?.toString() || "Отсутствует",
 			price: Number(fd.get("price")) || 0,
 			id: Math.floor(Date.now() + Math.random() * 100),
 			latitude: Math.random() * 180 - 90,

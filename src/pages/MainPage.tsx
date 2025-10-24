@@ -4,10 +4,11 @@ import { getVehicles } from "../api/vehiclesApi";
 import { AddVehicleModal } from "../components/AddVehicleModal";
 import { setIsModalOpen } from "../store/modalSlice";
 import { RootState } from "../store/store";
-import { addVehicle, setVehicles } from "../store/vehiclesSlice";
+import { setVehicles } from "../store/vehiclesSlice";
 import s from "./MainPage.module.scss";
 
 export const MainPage = () => {
+	const [sort, setSort] = useState<"asc" | "desc">("asc");
 	const [itemId, setItemId] = useState<number>();
 	const [isNameEdit, setIsNameEdit] = useState<boolean>(false);
 	const [newName, setNewName] = useState<string>("");
@@ -22,7 +23,7 @@ export const MainPage = () => {
 			const vehiclesData = await getVehicles();
 			dispatch(setVehicles(vehiclesData));
 		} catch (error) {
-			console.log(error);
+			console.log(error); // Понимаю что в реальном проекте ошибки так не выводятся, просто сделал заглушку
 		}
 	};
 
@@ -57,6 +58,14 @@ export const MainPage = () => {
 		dispatch(setVehicles(filteredVehicles));
 	};
 
+	const sortByYear = () => {
+		const sorted = [...vehicles].sort((a, b) =>
+			sort === "asc" ? a.year - b.year : b.year - a.year
+		);
+		dispatch(setVehicles(sorted));
+		setSort(sort === "asc" ? "desc" : "asc");
+	};
+
 	useEffect(() => {
 		getAllVehicles();
 	}, []);
@@ -69,47 +78,63 @@ export const MainPage = () => {
 				Создать новую машину
 			</button>{" "}
 			{/* Понимаю что немного спорное решение оставлять логику в разметке, но мне показалось что одну строчку излишне выносить в отдельную функцию. В реальном проекте сделал бы так, как нужно */}
-			<div>
-				{vehicles.map((item) => {
-					return (
-						<div className={s.vehicleItem} key={item.id}>
-							{isNameEdit && itemId === item.id ? (
-								<>
-									<input
-										placeholder="Имя"
-										value={newName}
-										onChange={(e: ChangeEvent<HTMLInputElement>) =>
-											setNewName(e.currentTarget.value.replace(/[^A-Za-zА-Яа-я]/g, ""))
-										}
-									/>
-									<button onClick={saveNewValue}>Сохранить</button>
-								</>
-							) : (
-								<p onClick={() => editMode(item.id, "name")}>Имя: {item.name}</p>
-							)}
-							<p>Модель: {item.model}</p>
-							<p>Цвет: {item.color}</p>
-							<p>Год: {item.year}</p>
-							{isPriceEdit && itemId === item.id ? (
-								<>
-									<input
-										type="text"
-										placeholder="Цена"
-										value={newPrice}
-										onChange={(e) =>
-											setNewPrice(Number(e.currentTarget.value.replace(/\D/g, "")))
-										}
-									/>
-									<button onClick={() => saveNewValue()}>Сохранить</button>
-								</>
-							) : (
-								<p onClick={() => editMode(item.id, "price")}>Цена: {item.price}</p>
-							)}
-							<button onClick={() => deleteVehicle(item.id)}>Удалить</button>
-						</div>
-					);
-				})}
-			</div>
+			<table className={s.table}>
+				<thead>
+					<tr>
+						<th>Имя</th>
+						<th>Модель</th>
+						<th>Цвет</th>
+						<th onClick={() => sortByYear()}>Год</th>
+						<th>Цена</th>
+						<th>Действия</th>
+					</tr>
+				</thead>
+				<tbody>
+					{vehicles.map((item) => (
+						<tr key={item.id}>
+							<td>
+								{isNameEdit && itemId === item.id ? (
+									<>
+										<input
+											placeholder="Имя"
+											value={newName}
+											onChange={(e: ChangeEvent<HTMLInputElement>) =>
+												setNewName(e.currentTarget.value.replace(/[^A-Za-zА-Яа-я]/g, ""))
+											}
+										/>
+										<button onClick={saveNewValue}>Сохранить</button>
+									</>
+								) : (
+									<span onClick={() => editMode(item.id, "name")}>{item.name}</span>
+								)}
+							</td>
+							<td>{item.model}</td>
+							<td>{item.color}</td>
+							<td>{item.year}</td>
+							<td>
+								{isPriceEdit && itemId === item.id ? (
+									<>
+										<input
+											type="text"
+											placeholder="Цена"
+											value={newPrice}
+											onChange={(e) =>
+												setNewPrice(Number(e.currentTarget.value.replace(/\D/g, "")))
+											}
+										/>
+										<button onClick={saveNewValue}>Сохранить</button>
+									</>
+								) : (
+									<span onClick={() => editMode(item.id, "price")}>{item.price}</span>
+								)}
+							</td>
+							<td>
+								<button onClick={() => deleteVehicle(item.id)}>Удалить</button>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
 		</div>
 	);
 };
