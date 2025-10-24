@@ -31,36 +31,26 @@ export const MainPage = () => {
 		action === "name" ? setIsNameEdit(true) : setIsPriceEdit(true);
 	};
 
-	const saveNewName = () => {
+	const saveNewValue = () => {
 		if (!itemId) return;
 
 		const updatedVehicles = vehicles.map((v) =>
-			v.id === itemId ? { ...v, name: newName } : v
+			v.id === itemId
+				? {
+						...v,
+						...(isNameEdit ? { name: newName } : { price: newPrice }),
+				  }
+				: v
 		);
+
 		dispatch(setVehicles(updatedVehicles));
 
 		setIsNameEdit(false);
-		setNewName("");
-		setItemId(undefined);
-	};
-
-	const saveNewPrice = () => {
-		if (!itemId) return;
-
-		const updatedVehicles = vehicles.map((v) =>
-			v.id === itemId ? { ...v, price: newPrice } : v
-		);
-
-		dispatch(setVehicles(updatedVehicles));
-
 		setIsPriceEdit(false);
+		setNewName("");
 		setNewPrice(0);
 		setItemId(undefined);
 	};
-
-	useEffect(() => {
-		getAllVehicles();
-	}, []);
 
 	return (
 		<div className={`${s.container} ${isModalOpen && s.hiddenScroll}`}>
@@ -82,7 +72,7 @@ export const MainPage = () => {
 											setNewName(e.currentTarget.value)
 										}
 									/>
-									<button onClick={saveNewName}>Сохранить</button>
+									<button onClick={saveNewValue}>Сохранить</button>
 								</>
 							) : (
 								<p onClick={() => editMode(item.id, "name")}>Имя: {item.name}</p>
@@ -97,7 +87,7 @@ export const MainPage = () => {
 										placeholder="Цена"
 										onChange={(e) => setNewPrice(Number(e.currentTarget.value))}
 									/>
-									<button onClick={() => saveNewPrice()}>Сохранить</button>
+									<button onClick={() => saveNewValue()}>Сохранить</button>
 								</>
 							) : (
 								<p onClick={() => editMode(item.id, "price")}>Цена: {item.price}</p>
