@@ -44,6 +44,20 @@ export const MainPage = () => {
 		setItemId(undefined);
 	};
 
+	const saveNewPrice = () => {
+		if (!itemId) return;
+
+		const updatedVehicles = vehicles.map((v) =>
+			v.id === itemId ? { ...v, price: newPrice } : v
+		);
+
+		dispatch(setVehicles(updatedVehicles));
+
+		setIsPriceEdit(false);
+		setNewPrice(0);
+		setItemId(undefined);
+	};
+
 	useEffect(() => {
 		getAllVehicles();
 	}, []);
@@ -78,11 +92,15 @@ export const MainPage = () => {
 							<p>Год: {item.year}</p>
 							{isPriceEdit && itemId === item.id ? (
 								<>
-									<input type="text" placeholder="Цена"/>
-									<button onClick={() => {}}>Сохранить</button>
+									<input
+										type="text"
+										placeholder="Цена"
+										onChange={(e) => setNewPrice(Number(e.currentTarget.value))}
+									/>
+									<button onClick={() => saveNewPrice()}>Сохранить</button>
 								</>
 							) : (
-								<p>Цена: {item.price}</p>
+								<p onClick={() => editMode(item.id, "price")}>Цена: {item.price}</p>
 							)}
 						</div>
 					);
