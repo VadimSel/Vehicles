@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getVehicles } from "../api/vehiclesApi";
 import { AddVehicleModal } from "../components/AddVehicleModal";
+import { PlacemarksMap } from "../components/PlacemarksMap";
 import { setIsModalOpen } from "../store/modalSlice";
 import { RootState } from "../store/store";
 import { setVehicles } from "../store/vehiclesSlice";
@@ -72,6 +73,7 @@ export const MainPage = () => {
 
 	return (
 		<div className={`${s.container} ${isModalOpen && s.hiddenScroll}`}>
+			<PlacemarksMap />
 			{isModalOpen && <AddVehicleModal />}
 			<button onClick={() => getAllVehicles()}>GetVen</button>
 			<button onClick={() => dispatch(setIsModalOpen(true))}>
