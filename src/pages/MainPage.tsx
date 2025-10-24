@@ -52,6 +52,10 @@ export const MainPage = () => {
 		setItemId(undefined);
 	};
 
+	useEffect(() => {
+		getAllVehicles();
+	}, []);
+
 	return (
 		<div className={`${s.container} ${isModalOpen && s.hiddenScroll}`}>
 			{isModalOpen && <AddVehicleModal />}
@@ -68,8 +72,9 @@ export const MainPage = () => {
 								<>
 									<input
 										placeholder="Имя"
+										value={newName}
 										onChange={(e: ChangeEvent<HTMLInputElement>) =>
-											setNewName(e.currentTarget.value)
+											setNewName(e.currentTarget.value.replace(/[^A-Za-zА-Яа-я]/g, ""))
 										}
 									/>
 									<button onClick={saveNewValue}>Сохранить</button>
@@ -85,7 +90,10 @@ export const MainPage = () => {
 									<input
 										type="text"
 										placeholder="Цена"
-										onChange={(e) => setNewPrice(Number(e.currentTarget.value))}
+										value={newPrice}
+										onChange={(e) =>
+											setNewPrice(Number(e.currentTarget.value.replace(/\D/g, "")))
+										}
 									/>
 									<button onClick={() => saveNewValue()}>Сохранить</button>
 								</>
