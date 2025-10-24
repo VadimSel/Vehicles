@@ -52,6 +52,11 @@ export const MainPage = () => {
 		setItemId(undefined);
 	};
 
+	const deleteVehicle = (id: number) => {
+		const filteredVehicles = vehicles.filter((v) => v.id !== id);
+		dispatch(setVehicles(filteredVehicles));
+	};
+
 	useEffect(() => {
 		getAllVehicles();
 	}, []);
@@ -100,6 +105,7 @@ export const MainPage = () => {
 							) : (
 								<p onClick={() => editMode(item.id, "price")}>Цена: {item.price}</p>
 							)}
+							<button onClick={() => deleteVehicle(item.id)}>Удалить</button>
 						</div>
 					);
 				})}
